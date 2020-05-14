@@ -45,7 +45,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        allowUserToLogin();
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                allowUserToLogin();
+            }
+        });
+
+
     }
 
     private void allowUserToLogin() {

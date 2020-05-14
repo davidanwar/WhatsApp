@@ -7,6 +7,19 @@
         app:showAsAction="never"
         android:title="Find Friends"
         >
+    </item>
 
+    <item
+        android:id="@+id/settingOption"
+        app:showAsAction="never"
+        android:title="Settings"
+        >
+    </item>
+
+    <item
+        android:id="@+id/logoutOption"
+        app:showAsAction="never"
+        android:title="Logout"
+        >
     </item>
 </menu>
