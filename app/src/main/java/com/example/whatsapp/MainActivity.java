@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.findFriendOption:
                 break;
             case R.id.settingOption:
+                sendUserToSettingsActivity();
                 break;
             case R.id.logoutOption:
                 mAuth.signOut();
@@ -74,5 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendUserToSettingsActivity() {
+        Intent settingsIntent = new Intent(MainActivity.this, SettingActivity.class);
+        startActivity(settingsIntent);
     }
 }
