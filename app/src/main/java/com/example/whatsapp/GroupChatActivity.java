@@ -75,6 +75,8 @@ public class GroupChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()){
                     displayMessage(dataSnapshot);
+                    // agar chat terakhir yang selalu terlihat
+                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 }
             }
 
@@ -82,6 +84,8 @@ public class GroupChatActivity extends AppCompatActivity {
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()){
                     displayMessage(dataSnapshot);
+                    // agar chat terakhir yang selalu terlihat
+                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 }
             }
 
@@ -121,6 +125,7 @@ public class GroupChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     currentUserName = dataSnapshot.child("name").getValue().toString();
+
                 }
             }
 
@@ -173,6 +178,9 @@ public class GroupChatActivity extends AppCompatActivity {
             String chatName = (String) ((DataSnapshot)iterator.next()).getValue();
             String chatTime = (String) ((DataSnapshot)iterator.next()).getValue();
             displayTextmessage.append(chatName + " :\n" + chatMessage + "\n" + chatTime + "     " + chatDate + "\n\n" );
+
+            // agar chat terakhir yang selalu terlihat
+            mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
         }
     }
 }
