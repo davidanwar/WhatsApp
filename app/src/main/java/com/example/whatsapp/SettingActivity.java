@@ -1,9 +1,11 @@
 package com.example.whatsapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +21,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 
@@ -32,6 +39,8 @@ public class SettingActivity extends AppCompatActivity {
     private String currentUserID;
     private FirebaseAuth mAuth;
     private DatabaseReference rootRef;
+    private StorageReference userProfileImageRef;
+    private static final int galleryPick = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class SettingActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         rootRef = FirebaseDatabase.getInstance().getReference();
+        userProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
         userName.setVisibility(View.INVISIBLE);
 
@@ -53,8 +63,55 @@ public class SettingActivity extends AppCompatActivity {
         });
 
         retrieveUserInfo();
+
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_PICK);
+                galleryIntent.setType("image/'");
+                startActivityForResult(galleryIntent, galleryPick);
+            }
+        });
     }
 
+    // untuk mengambil gambar crop
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == galleryPick && resultCode == RESULT_OK && data != null){
+                Uri imageUri = data.getData();
+
+                // liblary image crop
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1, 1)
+                        .start(this);
+            }
+
+                if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    if (resultCode == RESULT_OK){
+                        Uri resultUri = result.getUri(); // resultUri mengandung image dari gallery
+
+                        // upload image ke firebase
+                        StorageReference filePath = userProfileImageRef.child(currentUserID + ".jpg");
+                        filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(SettingActivity.this, "Image is Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String errorMassage = task.getException().toString();
+                                    Toast.makeText(SettingActivity.this, "Error: " + errorMassage, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
+                    }
+                }
+    }
 
     private void initializeFields() {
         updateAccountSetting = findViewById(R.id.updateSettingsButton);
