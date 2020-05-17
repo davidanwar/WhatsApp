@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.findFriendOption:
+                sendUserToFindFriendActivity();
                 break;
             case R.id.settingOption:
                 sendUserToSettingsActivity();
@@ -165,5 +166,10 @@ public class MainActivity extends AppCompatActivity {
     private void sendUserToSettingsActivity() {
         Intent settingsIntent = new Intent(MainActivity.this, SettingActivity.class);
         startActivity(settingsIntent);
+    }
+
+    private void sendUserToFindFriendActivity(){
+        Intent findFriendIntent = new Intent(MainActivity.this, FindFriendActivity.class);
+        startActivity(findFriendIntent);
     }
 }

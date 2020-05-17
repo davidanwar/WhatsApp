@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -41,6 +43,7 @@ public class SettingActivity extends AppCompatActivity {
     private DatabaseReference rootRef;
     private StorageReference userProfileImageRef;
     private static final int galleryPick = 1;
+    private ProgressDialog loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,12 @@ public class SettingActivity extends AppCompatActivity {
                 if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     if (resultCode == RESULT_OK){
+
+                        loadingBar.setTitle("Set Profile Image");
+                        loadingBar.setMessage("Please Wait....");
+                        loadingBar.setCanceledOnTouchOutside(false);
+                        loadingBar.show();
+
                         Uri resultUri = result.getUri(); // resultUri mengandung image dari gallery
 
                         // upload image ke firebase
@@ -101,7 +110,31 @@ public class SettingActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()){
                                     Toast.makeText(SettingActivity.this, "Image is Uploaded Successfully", Toast.LENGTH_SHORT).show();
+
+                                    // mendapatkan URL image
+                                    task.getResult().getMetadata().getReference().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            final String downloadUrl = task.getResult().toString();
+                                            rootRef.child("Users").child(currentUserID).child("image")
+                                                    .setValue(downloadUrl)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()){
+                                                                loadingBar.dismiss();
+                                                                Toast.makeText(SettingActivity.this, "Image Save Successfully in Database", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                String errorMessage = task.getException().toString();
+                                                                loadingBar.dismiss();
+                                                                Toast.makeText(SettingActivity.this, "Error" + errorMessage, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    });
                                 } else {
+                                    loadingBar.dismiss();
                                     String errorMassage = task.getException().toString();
                                     Toast.makeText(SettingActivity.this, "Error: " + errorMassage, Toast.LENGTH_SHORT).show();
                                 }
@@ -118,6 +151,7 @@ public class SettingActivity extends AppCompatActivity {
         userName = findViewById(R.id.setUserName);
         userStatus = findViewById(R.id.setProfileStatus);
         userProfileImage = findViewById(R.id.setProfileImage);
+        loadingBar = new ProgressDialog(this);
     }
 
     private void updateSettings() {
@@ -158,11 +192,13 @@ public class SettingActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("name"))
                                 && (dataSnapshot.hasChild("image"))){
+
                             String retrieveUserName = dataSnapshot.child("name").getValue().toString();
                             String retrieveStatus = dataSnapshot.child("status").getValue().toString();
                             String retrieveProfileImage = dataSnapshot.child("image").getValue().toString();
                             userName.setText(retrieveUserName);
                             userStatus.setText(retrieveStatus);
+                            Picasso.get().load(retrieveProfileImage).into(userProfileImage);
 
                         } else if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("name"))){
                             String retrieveUserName = dataSnapshot.child("name").getValue().toString();
