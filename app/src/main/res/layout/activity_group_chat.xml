@@ -51,7 +51,8 @@
 
         <EditText
             android:id="@+id/inputGroupMessage"
-            android:layout_width="350dp"
+            android:layout_weight="6"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="17dp"
             android:hint="Write Your Message Here"
@@ -60,7 +61,8 @@
 
         <ImageButton
             android:id="@+id/sendMessageGroupButton"
-            android:layout_width="50dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:src="@drawable/send_message"/>
 

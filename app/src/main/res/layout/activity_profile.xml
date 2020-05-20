@@ -47,19 +47,37 @@
         />
 
     <Button
-        android:id="@+id/sendMessageRequestButton"
+    android:id="@+id/sendMessageRequestButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/buttons"
+    android:layout_below="@+id/visitProfileStatus"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="65dp"
+    android:layout_marginRight="65dp"
+    android:text="Send Message"
+    android:textColor="@android:color/background_light"
+    android:textAllCaps="false"
+    android:textSize="20sp"
+    android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/declineMessageRequestButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/buttons"
-        android:layout_below="@+id/visitProfileStatus"
-        android:layout_marginTop="15dp"
+        android:layout_below="@+id/sendMessageRequestButton"
+        android:layout_marginTop="6dp"
         android:layout_marginLeft="65dp"
         android:layout_marginRight="65dp"
-        android:text="Send Message"
+        android:text="Cancel Request Message"
         android:textColor="@android:color/background_light"
         android:textAllCaps="false"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+
 
 
 
