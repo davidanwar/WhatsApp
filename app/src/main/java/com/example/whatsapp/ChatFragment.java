@@ -1,5 +1,6 @@
 package com.example.whatsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public class ChatFragment extends Fragment {
     private View privateChatView;
     private RecyclerView chatList;
     private String currentUserID;
+    private String retImage = "defaultImage";
 
     private FirebaseAuth mAuth;
     private DatabaseReference chatsRef, userRef;
@@ -84,16 +86,30 @@ public class ChatFragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                if (dataSnapshot.hasChild("image")){
-                                    final String retImage = dataSnapshot.child("image").getValue().toString();
+                                if (dataSnapshot.exists()){
 
-                                    Picasso.get().load(retImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
+                                    if (dataSnapshot.hasChild("image")){
+                                        retImage = dataSnapshot.child("image").getValue().toString();
+
+                                        Picasso.get().load(retImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
+                                    }
+
+                                    final String retName = dataSnapshot.child("name").getValue().toString();
+
+                                    holder.userName.setText(retName);
+                                    holder.userStatus.setText("Terkahir Dilihat" + "\n" + "Data" + " Time");
+
+                                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent chatsIntent = new Intent(getContext(), ChatActivity.class);
+                                            chatsIntent.putExtra("visitUserID", usersID);
+                                            chatsIntent.putExtra("visitUserName", retName);
+                                            chatsIntent.putExtra("visitUserImage", retImage);
+                                            startActivity(chatsIntent);
+                                        }
+                                    });
                                 }
-
-                                final String retName = dataSnapshot.child("name").getValue().toString();
-
-                                holder.userName.setText(retName);
-                                holder.userStatus.setText("Terkahir Dilihat" + "\n" + "Data" + "Time");
                             }
 
                             @Override
