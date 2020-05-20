@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatActivity">
+    tools:context=".ChatActivity"
+    android:background="@android:color/darker_gray">
 
     <include
         android:id="@+id/chatToolbar"
@@ -34,15 +35,17 @@
 
         <EditText
             android:id="@+id/inputMessage"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
+            android:layout_weight="5"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:text="Write Message Here"/>
+            android:hint="Write Message Here"/>
 
         <ImageButton
             android:id="@+id/sendMessageButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@drawable/send_message"
             />
 
