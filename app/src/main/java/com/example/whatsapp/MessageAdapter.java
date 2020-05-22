@@ -37,6 +37,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfileImage;
+        public ImageView messageSenderPicture, messageReceiverPicture;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -44,6 +45,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             senderMessageText = itemView.findViewById(R.id.senderMessageText);
             receiverMessageText = itemView.findViewById(R.id.receiverMessageText);
             receiverProfileImage = itemView.findViewById(R.id.messageProfileImage);
+            messageSenderPicture = itemView.findViewById(R.id.messageSenderImageView);
+            messageReceiverPicture = itemView.findViewById(R.id.messageReceiverImageView);
+
 
         }
     }
@@ -86,18 +90,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
 
-
+        holder.receiverMessageText.setVisibility(View.GONE);
+        holder.receiverProfileImage.setVisibility(View.GONE);
+        holder.senderMessageText.setVisibility(View.GONE);
+        holder.messageSenderPicture.setVisibility(View.GONE);
+        holder.messageReceiverPicture.setVisibility(View.GONE);
 
         if (fromMessageType.equals("text")) {
 
-            holder.receiverMessageText.setVisibility(View.INVISIBLE);
-            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
-            holder.senderMessageText.setVisibility(View.INVISIBLE);
+//            holder.receiverMessageText.setVisibility(View.INVISIBLE);
+//            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
+//            holder.senderMessageText.setVisibility(View.INVISIBLE);
 
             if (fromUserID.equals(messageSenderID)) {
                 holder.senderMessageText.setVisibility(View.VISIBLE);
                 holder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                holder.senderMessageText.setText(messages.getMessage());
+                holder.senderMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime() + ", " + messages.getDate());
 
             } else {
 
@@ -106,7 +114,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.receiverMessageText.setVisibility(View.VISIBLE);
 
                 holder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-                holder.receiverMessageText.setText(messages.getMessage());
+                holder.receiverMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime() + "-" + messages.getDate());
             }
 
         }

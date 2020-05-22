@@ -20,6 +20,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/chatToolbar"
         android:layout_above="@+id/chatLinearLayout"
+        android:layout_marginBottom="6dp"
         >
 
     </androidx.recyclerview.widget.RecyclerView>
@@ -34,6 +35,14 @@
         android:background="@android:color/background_light"
         >
 
+        <ImageButton
+            android:id="@+id/sendFileButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:src="@drawable/send_files" />
+
         <EditText
             android:id="@+id/inputMessage"
             android:layout_width="0dp"
@@ -45,10 +54,12 @@
         <ImageButton
             android:id="@+id/sendMessageButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/send_message"
-            />
+            android:background="@android:color/white"
+            android:src="@drawable/send_message" />
+
+
 
 
     </LinearLayout>
