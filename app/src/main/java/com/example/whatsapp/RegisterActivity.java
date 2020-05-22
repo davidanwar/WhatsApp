@@ -15,11 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -77,8 +80,20 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        String currentUserID = mAuth.getCurrentUser().getUid();
-                        rootReference.child("Users").child(currentUserID).push().setValue("David");
+
+                        final String currentUserID = mAuth.getCurrentUser().getUid();
+                        rootReference.child("Users").child(currentUserID).push().setValue("");
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(RegisterActivity.this,
+                                new OnSuccessListener<InstanceIdResult>() {
+                                    @Override
+                                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                                        String deviceToken = instanceIdResult.getToken();
+                                        rootReference.child("Users").child(currentUserID)
+                                                .child("device_token").setValue(deviceToken);
+                                    }
+                                });
+
+
 
                         sendUserToMainActivity();
                         Toast.makeText(RegisterActivity.this, "Account Created Successfull", Toast.LENGTH_SHORT).show();

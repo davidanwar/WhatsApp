@@ -10,7 +10,7 @@
         android:id="@+id/registerImage"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:src="@drawable/signup_photo"
+        android:src="@drawable/business"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:scaleType="fitCenter"/>
