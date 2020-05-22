@@ -186,4 +186,34 @@ public class ChatActivity extends AppCompatActivity {
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
     }
+
+    private void displayLastSeen() {
+        rootRef.child("Users").child(messageSenderID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.child("userState").hasChild("state")){
+                            String state = dataSnapshot.child("userState").child("state").getValue().toString();
+                            String date = dataSnapshot.child("userState").child("date").getValue().toString();
+                            String time = dataSnapshot.child("userState").child("time").getValue().toString();
+
+                            if (state.equals("online")) {
+                                userLastSeen.setText("online");
+                            } else if (state.equals("offline")) {
+                                userLastSeen.setText("Terkahir Dilihat" + time + " " + date);
+                            }
+
+                        } else {
+                            userLastSeen.setText("offline");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
 }
